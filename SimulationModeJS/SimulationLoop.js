@@ -13,7 +13,7 @@ let simulationInitialized=false;
 let vehicles=[];
 
 
-loop(); //main simulation loop
+loop(); //calling main simulation loop
 
 function loop() {
     deltaTime = performance.now() - lastCalledTime;
