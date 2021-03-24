@@ -1,0 +1,103 @@
+body {
+  background-color: silver;
+  color: #92959d;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 1.5em;
+  margin: 0;
+}
+
+.wrapper {
+  /*margin: auto;*/
+  /*justify-content: center;*/
+  font-family: Arial, Helvetica, sans-serif;
+  /*width: auto;*/
+}
+
+.toolbar {
+  width: 100%;
+  background-color: rgb(88, 184, 223);
+  overflow: auto;
+}
+
+.toolbar a {
+  float: left;
+  width: 11%;
+  text-align: center;
+  padding: 10px 10px;
+  transition: all 0.5s ease;
+}
+
+.toolbar a:hover {
+  background-color: darkslateblue;
+}
+
+.selected {
+  background-color: rgb(243, 199, 77);
+}
+
+#map-canvas {
+  /*float: right;*/
+  border: rgb(0, 65, 117) 5px solid;
+  cursor: none;
+  position: absolute;
+}
+
+#vehiclesCanvas {
+  border: rgb(44, 185, 126) 5px solid;
+  cursor: crosshair;
+  position: absolute;
+  display: none;
+}
+
+#img-data-div {
+  width: 100%;
+  max-width: 700px;
+  height: 100px;
+}
+
+.toolbar a img {
+  max-width: 100%;
+  height: auto;
+}
+
+#nav-bar {
+  background-color: #333;
+  color: #fff;
+}
+
+#nav-bar ul {
+  list-style: none;
+}
+
+#nav-bar li {
+  display: inline;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  background-color: rgb(77, 190, 243);
+  float: right;
+}
+
+#nav-bar a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 20px;
+  padding-right: 25px;
+  padding-bottom: 35px;
+  padding-top: 35px;
+}
+
+.container {
+  width: 50%;
+  margin: auto;
+  overflow: hidden;
+  background-color: rgb(77, 190, 243);
+}
+
+#changeRoad {
+  background-color: rgb(121, 77, 243);
+}
+
+#NoOfLanes {
+  color: black;
+}
