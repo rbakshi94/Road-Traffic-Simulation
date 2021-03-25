@@ -75,5 +75,6 @@ function updateVehicles(){
 function initializeIntersections(){
     for(let i in intersections){
         intersections[i].createStopLinePointsForLanes();
+        intersections[i].createEntryLinePointsForLanes();
     }
 }

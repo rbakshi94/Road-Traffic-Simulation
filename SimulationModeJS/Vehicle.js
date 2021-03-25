@@ -166,12 +166,12 @@ class Vehicle{
             this.position.x+=deltaPosition.x;
             this.position.y+=deltaPosition.y;
     
-            this.updateForwardVisionLinePosition();
+            this.drivingDecisions.updateForwardVisionLinePosition();
         }
         
 
         getDeceleration(){
-            return -Math.pow(Math.pow(convertKMHtoMS(this.velocity),2)/(2*this.getNextCheckpointDistance()),2)
+            return -Math.pow(Math.pow(convertKMHtoMS(this.velocity),2)/(2*this.drivingDecisions.getNextCheckpointDistance()),2)
             /this.maxComfortableDeceleration;//m/s^2
         }
 
@@ -224,7 +224,23 @@ class Vehicle{
             //if(Math.abs(this.getDeceleration())>2*this.maxComfortableDeceleration)
             //    deceleration=-2*this.maxComfortableDeceleration;
            // else 
+
+            if(!this.drivingDecisions.dynamicStates.toStop && this.velocity<40){
+                deceleration=1.5; //acceleration
+            }
+
+            else if(!this.drivingDecisions.dynamicStates.toStop && this.velocity>=40){
+                deceleration=0;
+            }
+
+            if(this.drivingDecisions.nextCheckpoint.object instanceof Intersection && this.drivingDecisions.dynamicStates.toStop){
                 deceleration=this.getDeceleration();
+            }
+            
+            if(this.velocity<0.1){
+                this.drivingDecisions.dynamicStates.toStop=false;
+                console.log("stop complete");
+            }
 
             this.velocity+=convertMStoKMH(deceleration*deltaTime/1000);
             //console.log(deceleration);
@@ -240,12 +256,12 @@ class Vehicle{
             else if(this.drivingDecisions.nextCheckpoint.object instanceof RoadBend || 
                 this.drivingDecisions.nextCheckpoint.object instanceof Intersection){
                 //console.log("next road ID "+this.nextCheckpoint.nextRoadID);
-                drawCircularMarker(this.drivingDecisions.nextCheckpoint.centroid.x,this.drivingDecisions.nextCheckpoint.centroid.y,
+                drawCircularMarker(this.drivingDecisions.nextTurnDynamics.centroid.x,this.drivingDecisions.nextTurnDynamics.centroid.y,
                     "green",15,ctx2);
                     this.drivingDecisions.updateTurnCentroidToVehicleLine();
 
                 if(!this.drivingDecisions.nextTurnDynamics.beganTurn){
-                    this.detectForTurnStart();
+                    this.drivingDecisions.detectForTurnStart();
                     console.log("detectting");
                 }
                     
@@ -258,7 +274,7 @@ class Vehicle{
             this.updateVelocity();
             this.moveForward();
             this.drivingDecisions.updateForwardVisionLinePosition();
-            drawCircularMarker(this.nextCheckpoint.intersectionInfo.stopPoint.x,this.nextCheckpoint.intersectionInfo.stopPoint.y,
+            drawCircularMarker(this.drivingDecisions.nextCheckpoint.intersectionInfo.stopPoint.x,this.drivingDecisions.nextCheckpoint.intersectionInfo.stopPoint.y,
             "blue",15,ctx2);
         }
 

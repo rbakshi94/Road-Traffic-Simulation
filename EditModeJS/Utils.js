@@ -256,7 +256,7 @@ function incrementAzimuthsBy360(azimuths){
 
 function laneFromCenterLine(roadLanes, lanePos){
     if(roadLanes!=1)
-        return lanePos-roads[controlVolumeBorderVertices[initialBorderPt].roadID].lanes/2;
+        return lanePos-roadLanes/2;
     else
         return 1;           
 }

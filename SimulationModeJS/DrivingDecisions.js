@@ -9,7 +9,7 @@ class DrivingDecisions{
         this.rearRightLineOfSight=rearRightLineOfSight;
 
         this.dynamicStates={turning:'N', steadyState:'Y',stopped:'N',laneChanging:'N',
-        changingSpeed:'N'};
+        changingSpeed:'N', toStop:false};
 
         this.nextTurnDynamics={centroid:{x:null,y:null},centroidToVehicleLine:new Line(), beganTurn:false,turning:false, finishingTurn:false,
             reachedEnd:false,radius:null, leftOrRightTurn:null};
@@ -78,10 +78,12 @@ class DrivingDecisions{
                 this.nextCheckpoint.object=intersections[i];
                 this.nextCheckpoint.intersectionInfo.stopPoint=
                     intersections[i].getStopLinePoint(this.vehicle.position.onRoadID,this.vehicle.position.lane);
+                 
                 this.nextCheckpoint.intersectionInfo.entryPoint=
                 intersections[i].getEntryLinePoint(this.vehicle.position.onRoadID,this.vehicle.position.lane);
 
                 let nextRoadAfterIntersection=this.pickRandomTurnFromPossibilities(this.getTurnPossibilitiesAtNextIntersection());
+                console.log(this.getTurnPossibilitiesAtNextIntersection());
                 this.nextCheckpoint.nextRoadID=nextRoadAfterIntersection.roadID;
                 this.nextCheckpoint.intersectionInfo.hasDecidedOnTurn=true;
                 this.nextTurnDynamics.radius=intersectionTurnRadius;
@@ -90,7 +92,7 @@ class DrivingDecisions{
                 this.nextCheckpoint.nextRoadDir=nextRoadAfterIntersection.nextRoadDir;
 
                 let lineIntersectionInfo;
-                let currentFollowLine=roads[this.vehicle.position.roadID].getFollowLineForLane(this.vehicle.position.lane);
+                let currentFollowLine=roads[this.vehicle.position.onRoadID].getFollowLineForLane(this.vehicle.position.lane);
                 let nextRoadFollowLine=roads[this.nextCheckpoint.nextRoadID].getFollowLineForLane(this.nextCheckpoint.nextLane);
                 
                 if(this.nextTurnDynamics.leftOrRightTurn=="right"){
@@ -109,7 +111,7 @@ class DrivingDecisions{
                 followLinesIntersectionPt.y=currentFollowLine.startY+
                 lineIntersectionInfo.lambda*(currentFollowLine.endY-currentFollowLine.startY);
 
-                let turnAngle=azimuthAToAzimuthBdiff(this.drivingDecisions.nextCheckpoint.nextRoadDir,azimuthMinusAngle(this.vehicle.position.dir,180));
+                let turnAngle=azimuthAToAzimuthBdiff(this.nextCheckpoint.nextRoadDir,azimuthMinusAngle(this.vehicle.position.dir,180));
                 
                 let followLinesIntersectionPtOffsetAlongCurrentRoadDir=intersectionTurnRadius/Math.tan(degreesToRadians(turnAngle/2));
 
@@ -122,7 +124,7 @@ class DrivingDecisions{
                 
                 this.nextTurnDynamics.centroid.y=followLinesIntersectionPt.y+followLinesIntersectionPtOffsetAlongCurrentRoadDirVector.y+
                 offsetToCentroidPositionVector.y;  
-
+                this.dynamicStates.toStop=true;
                 
                 return;
              }
@@ -181,8 +183,9 @@ class DrivingDecisions{
      getTurnPossibilitiesAtNextIntersection(){//- 
          let possibleTurnRoadsInfo=[];
          let turnType="";
+         console.log("joinRoad "+this.nextCheckpoint.object.joinRoad.length);
          for(let i in this.nextCheckpoint.object.joinRoad){
-             if(i!=this.nextCheckpoint.object.joinRoad[i].roadID){
+             if(i!=this.vehicle.position.onRoadID){
                  if(azimuthAToAzimuthBdiff(this.vehicle.position.dir,this.nextCheckpoint.object.joinRoad[i].dir)>=0){
                      console.log("right general rel dir");
                      turnType="rightward";
@@ -215,9 +218,9 @@ class DrivingDecisions{
 
 
 
-     pickRandomTurnFromPossibilities(possibileTurns_RoadIDs_LorR){//--
+     pickRandomTurnFromPossibilities(possibleTurnRoadsInfo){//--
 
-         let chosenRoad_ID_LorR=possibileTurnRoadIDs[Math.floor(Math.random() * possibileTurnRoadIDs.length)];
+         let chosenRoad_ID_LorR=possibleTurnRoadsInfo[Math.floor(Math.random() * possibleTurnRoadsInfo.length)];
          return chosenRoad_ID_LorR;
 
      }
